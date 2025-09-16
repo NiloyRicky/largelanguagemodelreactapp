@@ -1,0 +1,98 @@
+.header{
+    display: flex;
+    width:100vw;
+    height:100vh;
+    flex-direction: column;
+    gap:2rem;
+    align-items: center;
+    
+    
+    
+}
+.header-content{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    height: fit-content;
+    border-bottom: 1px solid black;
+}
+.header-content >h2{
+    margin-left: 1rem;
+    color: blue;
+}
+.header-content >button{
+    color: white;
+    background: green;
+    border-radius: 0.2rem white;
+    font-size: 0.9rem;
+    width:8rem;
+    
+    height: 3rem;
+    margin-top: 1rem;
+    margin-right: 2rem;
+}
+.new-stack-box{
+    width:fit-content;
+    background-color: aliceblue;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    height:fit-content;
+    flex-direction: column;
+    border:1px solid balck;
+    padding:2rem 2rem;
+    margin-top:5rem;
+}
+.new-stack-box > button{
+      color: white;
+    background: green;
+    border-radius: 0.2rem white;
+    font-size: 0.9rem;
+    width:6rem;
+    
+    height: 2rem;
+    margin-top: 1rem;
+    margin-right: 2rem;
+
+}
+.stack-list{
+    display:flex;
+    margin-left: -5rem;
+    gap:3rem;
+}
+.stack-list-box{
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+    justify-content: center;
+    
+}
+.stack-list-box>button{
+      color: black;
+    background: rgb(196, 194, 194);
+    border-radius: 0.2rem white;
+    font-size: 0.9rem;
+    width:6rem;
+    
+
+}
+
+
+
+
+/*Stack Builder css includes React Flow*/
+.stackbuilder-sidebar{
+    display: flex;
+    flex-direction: column;
+    gap:2rem;
+}
+.stackbuilder-sidebar > h3{
+    font-size: 2rem;
+
+}
+.stackbuilder-sidebar >h4:hover{
+    border:1px solid grey;
+    border-radius: 9px white;
+    
+}
