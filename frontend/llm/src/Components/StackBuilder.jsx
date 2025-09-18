@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState ,useCallback, useEffect} from "react";
 import ReactFlow, {
   addEdge,
   Background,
@@ -11,7 +11,7 @@ import UserQueryNode from "../pages/UserQueryNode";
 import KnowledgeBaseNode from "../pages/KnowledgeBaseNode";
 import LLMEngineNode from "../pages/LLMEngineNode";
 import OutputNode from "../pages/OutputNode";
-
+import axios from "axios";
 
 
  const nodeTypes = {
@@ -26,6 +26,11 @@ function StackBuilder() {
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
 
+
+
+  useEffect(()=>{
+console.log("Current Workflow State:", nodes);
+  },[nodes])
   const onConnect = (params) => setEdges((eds) => addEdge(params, eds));
 
  
@@ -40,11 +45,26 @@ function StackBuilder() {
     event.dataTransfer.dropEffect = "move";
   };
 
+
+
+
+ // 👇 Centralized node data update
+ const onChangeNodeData = useCallback((id, newData) => {
+    setNodes((nds) =>
+      nds.map((node) =>
+        node.id === id ? { ...node, data: { ...node.data, ...newData, onChange: onChangeNodeData } } : node
+      )
+    );
+  }, []);
+
+
+
+
   const onDrop = (event) => {
     event.preventDefault();
 
     const type = event.dataTransfer.getData("application/reactflow");
-    if (!type) return;
+    if (!type  || !reactFlowInstance) return;
 
     const position = reactFlowInstance.project({
       x: event.clientX,
@@ -55,11 +75,69 @@ function StackBuilder() {
       id: `${+new Date()}`,
       type,
       position,
-      data: { label: `${type} node` },
+      data: { label: `${type} node`,onChange: onChangeNodeData },
     };
 
     setNodes((nds) => nds.concat(newNode));
   };
+
+
+
+
+
+
+  // 👇 When you create a new node, inject the onChange handler
+  const addNode = (type) => {
+    setNodes((nds) => [
+      ...nds,
+      {
+        id: `${nds.length + 1}`,
+        type,
+        position: { x: 100, y: 100 + nds.length * 100 },
+        data: { onChange: onChangeNodeData },
+      },
+    ]);
+  };
+
+  // 🚀 Send workflow to backend
+  const runWorkflow = async () => {
+     const userNode = nodes.find((n) => n.type === "userQuery");
+  const userQuery = userNode?.data?.query || "";
+    const res = await fetch("http://localhost:8000/run-workflow", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ nodes, edges,query:userQuery }),
+    });
+    const result = await res.json();
+    alert(result.answer); // Show in popup for now
+      // find the output node
+ 
+
+ const outputNode = nodes.find((n) => n.type === "output");
+  if (outputNode) {
+    setNodes((nds) =>
+      nds.map((node) =>
+        node.id === outputNode.id
+          ? {
+              ...node,
+              data: {
+                ...node.data,
+                answer: result.answer, // 👈 backend response
+              },
+            }
+          : node
+      )
+    );
+  }
+
+
+
+  }
+
+
+
+
+
 
   return (
     <div style={{ display: "flex", height: "100vh" }}>
@@ -81,6 +159,7 @@ function StackBuilder() {
         <h4 draggable onDragStart={(e) => onDragStart(e, "output")}>
           Output
         </h4>
+           <button onClick={runWorkflow} style={{ marginTop: "20px" }}>Run Workflow</button>
       </div>
 
       {/* React Flow Canvas */}

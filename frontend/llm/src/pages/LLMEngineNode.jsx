@@ -1,17 +1,31 @@
 
 
 import { Handle, Position } from "reactflow";
-export default function LLMEngineNode({ data }) {
+export default function LLMEngineNode({ id,data }) {
+
+
+
+const handleChange = (field, value) => {
+    if (data?.onChange) {
+      data.onChange(id, { [field]: value });
+    }
+  };
+
   return (
     <div style={{ border: "1px solid #333", padding: "10px", borderRadius: "6px", background: "#fff" }}>
       <h4>LLM Engine</h4>
-      <select style={{ width: "100%" }}>
-        <option>OpenAI GPT</option>
-        <option>Gemini</option>
+      <select style={{ width: "100%" }} value={data?.model || "OpenAI GPT"} onChange={(e) => handleChange("model", e.target.value)}>
+        <option  value="OpenAI GPT">OpenAI GPT</option>
+        <option value="Gemini">Gemini</option>
       </select>
-      <textarea placeholder="Custom prompt (optional)" style={{ width: "100%", marginTop: "5px" }} />
+      <textarea placeholder="Custom prompt (optional)" style={{ width: "100%", marginTop: "5px" }}
+      value={data?.prompt || ""}
+        onChange={(e) => handleChange("prompt", e.target.value)}/>
       <label>
-        <input type="checkbox" /> Use Web Search (SerpAPI)
+        <input type="checkbox"
+         checked={data?.useWebSearch || false}
+          onChange={(e) => handleChange("useWebSearch", e.target.checked)}
+        /> Use Web Search (SerpAPI)
       </label>
 
 
