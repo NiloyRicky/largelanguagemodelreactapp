@@ -41,8 +41,7 @@ This project allows you to upload documents (e.g., resumes), embed them locally 
 - 🧠 HuggingFace Transformers (local models like GPT-2)
 - (Optional) OpenAI API (cloud-based LLMs + embeddings)
 
-### Database
-- SQLite (default) for Chroma storage
+
 
 ---
 ## 📁 Project Structure
@@ -90,9 +89,21 @@ fastapi
 uvicorn
 chromadb
 sqlalchemy
+psycopg2-binary
 pydantic
 transformers
 torch
+python-dotenv
+
+Configure PostgreSQL
+
+Create a database:
+CREATE DATABASE workflow_ai;
+
+Update db.py with your connection string:
+SQLALCHEMY_DATABASE_URL = "postgresql://username:password@localhost:5432/workflow_ai"
+
+
 
 Run Backend:
 uvicorn app.main:app --reload --port 8000
